@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Code2, TrendingUp, Terminal } from 'lucide-react'
+import { TrendingUp, Terminal } from 'lucide-react'
 
 interface ChooseYourPathProps {
   onChoose: (isTechnical: boolean) => void
