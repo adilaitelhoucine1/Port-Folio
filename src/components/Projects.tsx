@@ -69,16 +69,19 @@ const Projects = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
         viewport={{ once: true }}
         className="text-center mb-16"
       >
-        <h2 className="text-4xl md:text-5xl font-bold mb-4">
+        <h2 className="text-4xl md:text-6xl font-bold mb-4">
           <span className="gradient-text">{t('projects.title')}</span>
         </h2>
-        <p className="text-xl text-gray-600 dark:text-gray-400">{t('projects.subtitle')}</p>
+        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          {t('projects.subtitle')}
+        </p>
       </motion.div>
 
-      <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 px-4 md:px-0">
+      <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-7xl mx-auto px-4">
         {projects.map((project, index) => (
           <motion.div
             key={project.title}
@@ -154,7 +157,7 @@ const Projects = () => {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mt-16"
+        className="text-center mt-16 px-4"
       >
         <motion.a
           href="https://github.com/adilaitelhoucine1"

@@ -51,6 +51,17 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (showLangMenu && !target.closest('.lang-menu-container')) {
+        setShowLangMenu(false)
+      }
+    }
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [showLangMenu])
+
   const navItems = [
     { name: t('nav.home'), href: '#home' },
     { name: t('nav.techStack'), href: '#tech-stack' },
@@ -116,12 +127,15 @@ const Navbar = () => {
               )}
             </button>
 
-            <div className="relative">
+            <div className="relative lang-menu-container">
               <button
                 onClick={() => setShowLangMenu(!showLangMenu)}
                 className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-primary transition-colors"
               >
                 <Globe className="w-5 h-5" />
+                <span className="text-sm font-medium">
+                  {languages.find(lang => lang.code === i18n.language)?.flag}
+                </span>
               </button>
 
               <AnimatePresence>
@@ -130,17 +144,17 @@ const Navbar = () => {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700"
+                    className="hidden md:block absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50"
                   >
                     {languages.map((lang) => (
                       <button
                         key={lang.code}
                         onClick={() => changeLanguage(lang.code)}
-                        className={`w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2 ${
-                          i18n.language === lang.code ? 'bg-primary/10 text-primary' : ''
-                        } first:rounded-t-lg last:rounded-b-lg`}
+                        className={`w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-3 transition-colors ${
+                          i18n.language === lang.code ? 'bg-gradient-to-r from-primary/20 to-secondary/20 text-primary font-semibold' : 'text-gray-700 dark:text-gray-300'
+                        }`}
                       >
-                        <span>{lang.flag}</span>
+                        <span className="text-xl">{lang.flag}</span>
                         <span className="text-sm">{lang.name}</span>
                       </button>
                     ))}
@@ -157,10 +171,51 @@ const Navbar = () => {
             <button onClick={toggleTheme} className="p-2 text-gray-700 dark:text-gray-300">
               {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            <button onClick={() => setShowLangMenu(!showLangMenu)} className="p-2 text-gray-700 dark:text-gray-300">
-              <Globe className="w-5 h-5" />
-            </button>
-            <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-gray-700 dark:text-gray-300">
+            <div className="relative lang-menu-container">
+              <button 
+                onClick={() => {
+                  setShowLangMenu(!showLangMenu)
+                  setIsOpen(false)
+                }} 
+                className="p-2 text-gray-700 dark:text-gray-300 flex items-center space-x-1"
+              >
+                <Globe className="w-5 h-5" />
+                <span className="text-sm">
+                  {languages.find(lang => lang.code === i18n.language)?.flag}
+                </span>
+              </button>
+              
+              <AnimatePresence>
+                {showLangMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="md:hidden absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50"
+                  >
+                    {languages.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => changeLanguage(lang.code)}
+                        className={`w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-3 transition-colors ${
+                          i18n.language === lang.code ? 'bg-gradient-to-r from-primary/20 to-secondary/20 text-primary font-semibold' : 'text-gray-700 dark:text-gray-300'
+                        }`}
+                      >
+                        <span className="text-xl">{lang.flag}</span>
+                        <span className="text-sm">{lang.name}</span>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            <button 
+              onClick={() => {
+                setIsOpen(!isOpen)
+                setShowLangMenu(false)
+              }} 
+              className="p-2 text-gray-700 dark:text-gray-300"
+            >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
@@ -191,33 +246,6 @@ const Navbar = () => {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {showLangMenu && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800"
-          >
-            <div className="px-4 py-4 space-y-2">
-              {languages.map((lang) => (
-                <button
-                  key={lang.code}
-                  onClick={() => changeLanguage(lang.code)}
-                  className={`w-full px-4 py-2 text-left rounded-lg flex items-center space-x-2 ${
-                    i18n.language === lang.code
-                      ? 'bg-primary text-white'
-                      : 'hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  <span>{lang.flag}</span>
-                  <span>{lang.name}</span>
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </nav>
   )
 }
