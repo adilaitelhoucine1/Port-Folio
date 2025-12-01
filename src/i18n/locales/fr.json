@@ -1,0 +1,11 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "techStack": "Technologies",
+    "projects": "Projets",
+    "experience": "Expérience",
+    "skills": "Compétences",
+    "contact": "Contact"
+  }
+}
+
